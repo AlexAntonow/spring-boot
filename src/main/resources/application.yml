@@ -1,0 +1,21 @@
+logging:
+  level:
+    com.springboot.demo: INFO
+
+info:
+  application:
+    name: Spring Boot project
+    description: Spring Boot learning project
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          info, health
+  endpoint:
+    health:
+      show-components: always
+  info:
+    env:
+      enabled: true
