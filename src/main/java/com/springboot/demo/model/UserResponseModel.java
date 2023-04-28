@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 public class UserResponseModel {
 
-    private int id;
+//    private int id;
 
     @JsonProperty("first-name")
     private String firstName;

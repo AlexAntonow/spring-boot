@@ -1,10 +1,7 @@
 package com.springboot.demo.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,5 +28,7 @@ public class UserRequestModel {
     private String email;
 
     @Positive
+    @Min(value = 0, message = "Age cannot be less than 0 years")
+    @Max(value = 150, message = "Age cannot be more than 150 years")
     private int age;
 }
