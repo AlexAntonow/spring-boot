@@ -3,44 +3,35 @@ package com.springboot.demo.service;
 import com.springboot.demo.data.UserEntity;
 import com.springboot.demo.data.UsersRepository;
 import com.springboot.demo.shared.UserDto;
+import com.springboot.demo.shared.Utils;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
 
     UsersRepository usersRepository;
+    Utils utils;
 
     @Autowired
-    public UserServiceImpl(UsersRepository usersRepository){
+    public UserServiceImpl(UsersRepository usersRepository, Utils utils){
         this.usersRepository = usersRepository;
+        this.utils = utils;
     }
 
 
     @Override
     public List<UserDto> getAllUsers() {
-        List<UserDto> allUsers = new ArrayList<>();
         Iterable<UserEntity> users = usersRepository.findAll();
-        ModelMapper modelMapper = new ModelMapper();
-        long count = StreamSupport.stream(users.spliterator(), false).count();
-        System.out.println(count);
-        if(count > 0){
-            users.forEach(userEntity -> {
-                UserDto userDto = modelMapper.map(userEntity, UserDto.class);
-                allUsers.add(userDto);
-            });
-        }
 
-        return allUsers;
+        return utils.getUserDtoList(users);
     }
 
     @Override
@@ -71,50 +62,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> getUsersByFirstName(String firstName) {
-        List<UserDto> allUsers = new ArrayList<>();
         Iterable<UserEntity> users = usersRepository.findByFirstName(firstName);
-        ModelMapper modelMapper = new ModelMapper();
-        long count = StreamSupport.stream(users.spliterator(), false).count();
-        if(count > 0){
-            users.forEach(userEntity -> {
-                UserDto userDto = modelMapper.map(userEntity, UserDto.class);
-                allUsers.add(userDto);
-            });
-        }
 
-        return allUsers;
+        return utils.getUserDtoList(users);
     }
 
     @Override
     public List<UserDto> getUsersByLastName(String lastName) {
-        List<UserDto> allUsers = new ArrayList<>();
         Iterable<UserEntity> users = usersRepository.findByLastName(lastName);
-        ModelMapper modelMapper = new ModelMapper();
-        long count = StreamSupport.stream(users.spliterator(), false).count();
-        if(count > 0){
-            users.forEach(userEntity -> {
-                UserDto userDto = modelMapper.map(userEntity, UserDto.class);
-                allUsers.add(userDto);
-            });
-        }
 
-        return allUsers;
+        return utils.getUserDtoList(users);
     }
 
     @Override
     public List<UserDto> getUsersByFirstNameAndLastName(String firstName, String lastName) {
-        List<UserDto> allUsers = new ArrayList<>();
         Iterable<UserEntity> users = usersRepository.findByFirstNameAndLastName(firstName, lastName);
-        ModelMapper modelMapper = new ModelMapper();
-        long count = StreamSupport.stream(users.spliterator(), false).count();
-        if(count > 0){
-            users.forEach(userEntity -> {
-                UserDto userDto = modelMapper.map(userEntity, UserDto.class);
-                allUsers.add(userDto);
-            });
-        }
 
-        return allUsers;
+        return utils.getUserDtoList(users);
     }
 
 
