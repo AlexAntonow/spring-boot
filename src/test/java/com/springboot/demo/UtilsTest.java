@@ -7,7 +7,7 @@ import com.springboot.demo.model.UserResponseModel;
 import com.springboot.demo.shared.UserDto;
 import com.springboot.demo.shared.Utils;
 import jakarta.validation.ValidationException;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
