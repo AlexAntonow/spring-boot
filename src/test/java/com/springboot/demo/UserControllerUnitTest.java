@@ -7,6 +7,7 @@ import com.springboot.demo.model.UserResponseModel;
 import com.springboot.demo.service.UserServiceImpl;
 import com.springboot.demo.shared.UserDto;
 import com.springboot.demo.shared.Utils;
+import jakarta.xml.bind.ValidationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -239,6 +240,24 @@ public class UserControllerUnitTest {
 
     }
 
+    // ## Added ##
+    @Test
+    public void createUserExceptionTest(){
+        UserRequestModel userRequestModel = new UserRequestModel("First Name", "LastName",
+                "mail@mail.com", 18);
+
+        UserDto userDto = new UserDto(1, "First Name", "LastName",
+                "mail@mail.com", 18);
+
+        when(userService.getUserByEmail(userRequestModel.getEmail())).thenReturn(userDto);
+
+        try{
+            userController.createUser(userRequestModel);
+        }catch (Exception ex){
+            assertThat(ex.getMessage()).isEqualTo("User with provided email already exists");
+        }
+    }
+
     @Test
     public void updateUserTest() throws NotFoundException{
         UserRequestModel userRequestModel = new UserRequestModel("First Name", "LastName",
@@ -261,6 +280,20 @@ public class UserControllerUnitTest {
 
     }
 
+    // ## Added ##
+    @Test
+    public void updateUserExceptionTest() throws NotFoundException{
+        UserRequestModel userRequestModel = new UserRequestModel("First Name", "LastName",
+                "mail@mail.com", 18);
+        when(userService.getUserByEmail(userRequestModel.getEmail())).thenReturn(null);
+
+        try{
+            userController.updateUser(userRequestModel);
+        }catch (Exception ex){
+            assertThat(ex.getMessage()).isEqualTo("Failed to update, user not found");
+        }
+    }
+
     @Test
     public void deleteUserTest() {
         UserDto userDto = new UserDto(1, "First Name", "LastName",
@@ -271,5 +304,32 @@ public class UserControllerUnitTest {
         when(userService.deleteUserByEmail(email)).thenReturn(true);
         ResponseEntity<Void> responseEntity = userController.delete(email);
         assertThat(responseEntity.getStatusCode().toString()).isEqualTo("204 NO_CONTENT");
+    }
+
+    // ## Added ##
+    @Test
+    public void deleteUserExceptionTest() {
+        String email = "mail@mail.com";
+        when(userService.getUserByEmail(email)).thenReturn(null);
+        try{
+            userController.delete(email);
+        }catch (Exception ex){
+            assertThat(ex.getMessage()).isEqualTo("Failed to delete, user not found");
+        }
+    }
+
+    // ## Added ##
+    @Test
+    public void deleteUserExceptionSecondTest() {
+        UserDto userDto = new UserDto(1, "First Name", "LastName",
+                "mail@mail.com", 18);
+        String email = "mail@mail.com";
+        when(userService.getUserByEmail(email)).thenReturn(userDto);
+        when(userService.deleteUserByEmail(email)).thenReturn(false);
+        try{
+            userController.delete(email);
+        }catch (Exception ex){
+            assertThat(ex.getMessage()).isEqualTo("An error occurred while executing request");
+        }
     }
 }
